@@ -7,7 +7,9 @@
   "scripts": {
     "start": "nodemon --exec babel-node -e js ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "now -e APOLLO_ENGINE_KEY=@stravels-graphql.apollo_engine_key --public"
+    "deploy": "now -e APOLLO_ENGINE_KEY=@stravels-graphql.apollo_engine_key --public",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "François Best <francoisbest@gmail.com>",
   "devDependencies": {
@@ -32,6 +34,8 @@
     "graphql-extensions": "^0.0.5",
     "graphql-tools": "^2.15.0",
     "moment-timezone": "^0.5.14",
-    "webtask-tools": "^3.2.0"
-  }
+    "webtask-tools": "^3.2.0",
+    "snyk": "^1.69.5"
+  },
+  "snyk": true
 }
