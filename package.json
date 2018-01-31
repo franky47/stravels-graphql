@@ -31,7 +31,6 @@
     "graphql": "^0.12.3",
     "graphql-extensions": "^0.0.5",
     "graphql-tools": "^2.15.0",
-    "moment-timezone": "^0.5.14",
-    "webtask-tools": "^3.2.0"
+    "moment-timezone": "^0.5.14"
   }
 }
