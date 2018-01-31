@@ -1,5 +1,5 @@
 {
-  "name": "stravels-graphql-server",
+  "name": "stravels-graphql",
   "version": "0.1.0",
   "private": true,
   "description": "GraphQL data server for Stravels.io",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node -e js ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "now -e APOLLO_ENGINE_KEY=@stravels-graphql-server.apollo_engine_key"
+    "deploy": "now -e APOLLO_ENGINE_KEY=@stravels-graphql.apollo_engine_key --public"
   },
   "author": "François Best <francoisbest@gmail.com>",
   "devDependencies": {
