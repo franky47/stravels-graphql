@@ -16,8 +16,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-latest": "^6.23.0",
-    "nodemon": "^1.11.0",
-    "now": "^9.2.7"
+    "nodemon": "^1.11.0"
   },
   "dependencies": {
     "apollo-engine": "^0.5.2",
@@ -31,6 +30,9 @@
     "graphql": "^0.12.3",
     "graphql-extensions": "^0.0.5",
     "graphql-tools": "^2.15.0",
-    "moment-timezone": "^0.5.14"
+    "moment-timezone": "^0.5.14",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.32.2"
   }
 }
