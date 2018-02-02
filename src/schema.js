@@ -35,6 +35,7 @@ const typeDefs = `
     id: ID! @unique
     firstName: String
     lastName: String
+    fullName: String
     profilePicture: String!
     email: String
     travels: [Travel!]!
@@ -90,7 +91,9 @@ const resolvers = {
       const { data } = await strava.get('/athlete', injectAuthHeader(context))
       return {
         id: data.id,
-        name: `${data.firstname} ${data.lastname}`,
+        firstName: data.firstname,
+        lastName: data.lastname,
+        fullName: `${data.firstname} ${data.lastname}`,
         profilePicture: data.profile,
         travels: await stravels
           .get(`/travels`, injectAuthHeader(context))
