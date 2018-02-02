@@ -7,7 +7,7 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import axios from 'axios'
 import moment from 'moment-timezone'
-// import typeDefs from './schema.graphql'
+import { exchangeToken } from './auth'
 
 const strava = axios.create({
   baseURL: 'https://www.strava.com/api/v3'
@@ -16,7 +16,7 @@ const stravels = axios.create({
   baseURL: 'https://wt-92cccbcf027a1b4070443ff04b9033cc-0.sandbox.auth0-extend.com/stravels-sandbox'
 })
 
-const injectHeaders = (context) => ({
+const injectAuthHeader = (context) => ({
   headers: {
     Authorization: context.headers.authorization
   }
@@ -24,6 +24,8 @@ const injectHeaders = (context) => ({
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = `
+  scalar Token
+
   enum DISTANCE_UNIT {
     METERS
     KILOMETERS
@@ -31,8 +33,10 @@ const typeDefs = `
 
   type User {
     id: ID! @unique
-    name: String!
+    firstName: String
+    lastName: String
     profilePicture: String!
+    email: String
     travels: [Travel!]!
   }
 
@@ -48,6 +52,7 @@ const typeDefs = `
   type Travel {
     id: ID! @unique
     name: String
+    urlSlug: String!
     author: User!
     activities: [Activity!]!
   }
@@ -58,6 +63,10 @@ const typeDefs = `
     activity(id: ID!): Activity
     activities(last: Int): [Activity!]
     publicTravels: [Travel!]!
+  }
+
+  type Mutation {
+    login(code: String!): Token
   }
 `
 
@@ -78,13 +87,13 @@ const formatActivity = (data) => ({
 const resolvers = {
   Query: {
     async me (root, args, context) {
-      const { data } = await strava.get('/athlete', injectHeaders(context))
+      const { data } = await strava.get('/athlete', injectAuthHeader(context))
       return {
         id: data.id,
         name: `${data.firstname} ${data.lastname}`,
         profilePicture: data.profile,
         travels: await stravels
-          .get(`/travels`, injectHeaders(context))
+          .get(`/travels`, injectAuthHeader(context))
           .then(res => res.data)
           .then(travels => travels.map(t => ({
             ...t,
@@ -94,7 +103,7 @@ const resolvers = {
     },
     async travel (root, args, context) {
       if (!args.id) return null
-      return stravels.get(`/travels/${args.id}`, injectHeaders(context))
+      return stravels.get(`/travels/${args.id}`, injectAuthHeader(context))
         .then(res => res.data)
         .then(travel => ({
           ...travel,
@@ -103,12 +112,12 @@ const resolvers = {
     },
     async activity (root, args, context) {
       if (!args.id) return null
-      const { data } = await strava.get(`/activities/${args.id}`, injectHeaders(context))
+      const { data } = await strava.get(`/activities/${args.id}`, injectAuthHeader(context))
       return formatActivity(data)
     },
     async activities (root, args, context) {
       const { data } = await strava.get('/athlete/activities', {
-        ...injectHeaders(context),
+        ...injectAuthHeader(context),
         params: {
           per_page: args.last
         }
@@ -117,6 +126,11 @@ const resolvers = {
     },
     async publicTravels (root, args, context) {
       return []
+    }
+  },
+  Mutation: {
+    async login (root, { code }) {
+      return exchangeToken(code)
     }
   }
 }
