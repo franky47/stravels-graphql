@@ -1,3 +1,4 @@
+import './config'
 import express from 'express'
 import { graphqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
@@ -7,10 +8,10 @@ import chalk from 'chalk'
 import * as Schema from './schema'
 import setupDatabase from './db/setup'
 
-const PORT = 3000
+const port = process.env.PORT || 3000
 const server = express()
 
-if (typeof process.env.APOLLO_ENGINE_KEY === 'undefined') {
+if (!process.env.APOLLO_ENGINE_KEY) {
   console.warn(chalk.yellow('WARNING: process.env.APOLLO_ENGINE_KEY is not defined. Check README.md for more information'))
 }
 
@@ -41,6 +42,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
 
 setupDatabase()
   .then(() => {
+    server.listen(port, () => {
       console.log(`GraphQL Server is now running on http://localhost:${port}/graphql`)
     })
   })
