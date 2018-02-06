@@ -19,8 +19,7 @@ const exchangeToken = (code) =>
       client_secret: process.env.STRAVA_CLIENT_SECRET,
       code
     }
-  })
-    .then(res => res.data)
+  }).then(res => res.data)
 
 const getCurrentAthlete = (token) =>
   api.get('/athlete', injectHeader(token))
@@ -37,8 +36,7 @@ const getActivities = (token, page = 1, pageSize = 30) =>
       page,
       page_size: pageSize
     }
-  })
-    .then(res => res.data)
+  }).then(res => res.data)
 
 const getAllActivities = async (token) => {
   let activities = []

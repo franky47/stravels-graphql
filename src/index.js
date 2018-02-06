@@ -4,7 +4,4 @@ import setupDatabase from './db/setup'
 
 // Main Entrypoint --
 
-setupDatabase()
-  .then(() => {
-    server.start()
-  })
+setupDatabase().then(server.start)
