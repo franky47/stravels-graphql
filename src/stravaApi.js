@@ -12,11 +12,25 @@ const injectHeader = (token) => ({
 
 // Wrapped Endpoints --
 
-api.getCurrentAthlete = (token) =>
+const exchangeToken = (code) =>
+  axios.get('https://www.strava.com/oauth/token', {
+    params: {
+      client_id: process.env.STRAVA_CLIENT_ID,
+      client_secret: process.env.STRAVA_CLIENT_SECRET,
+      code
+    }
+  })
+    .then(res => res.data)
+
+const getCurrentAthlete = (token) =>
   api.get('/athlete', injectHeader(token))
     .then(res => res.data)
 
-api.getActivities = ({ token, page = 1, pageSize = 30 }) =>
+const getActivity = (token, id) =>
+  api.get(`/activities/${id}`, injectHeader(token))
+    .then(res => res.data)
+
+const getActivities = (token, page = 1, pageSize = 30) =>
   api.get('/athlete/activities', {
     ...injectHeader(token),
     params: {
@@ -26,4 +40,31 @@ api.getActivities = ({ token, page = 1, pageSize = 30 }) =>
   })
     .then(res => res.data)
 
-export default api
+const getAllActivities = async (token) => {
+  let activities = []
+  let page = 1
+  while (true) {
+    let data = []
+    try {
+      data = await getActivities(token, page, 100)
+    } catch (error) {
+      // todo: if rate-limiting, wait and try again
+      // (although it might have to wait a long time)
+      console.log(`Error while fetching all activities on page ${page}`, error)
+      break // Probably rate-limited, return what you can
+    }
+    if (data.length === 0) {
+      break
+    }
+    activities = [...activities, ...data]
+    page++
+  }
+  return activities
+}
+
+export default {
+  exchangeToken,
+  getCurrentAthlete,
+  getActivity,
+  getAllActivities
+}

@@ -5,84 +5,76 @@
 
 // graphql-tools combines a schema string with resolvers.
 import { makeExecutableSchema } from 'graphql-tools'
-import axios from 'axios'
-import moment from 'moment-timezone'
+// import moment from 'moment-timezone'
 import typeDefs from './schema.graphql'
+import Query from './queries'
 import Mutation from './mutations'
 
-const strava = axios.create({
-  baseURL: 'https://www.strava.com/api/v3'
-})
-const stravels = axios.create({
-  baseURL: 'https://wt-92cccbcf027a1b4070443ff04b9033cc-0.sandbox.auth0-extend.com/stravels-sandbox'
-})
+const extractToken = (headers) => {
+  return (headers.authorization || '').slice('Bearer '.length)
+}
 
-const injectAuthHeader = (context) => ({
-  headers: {
-    Authorization: context.headers.authorization
-  }
-})
+// const formatDate = (date) =>
+//   ({ tz }) => tz ? moment(date).tz(tz).format() : date
 
-const formatDate = (date) =>
-  ({ tz }) => tz ? moment(date).tz(tz).format() : date
-
-const formatActivity = (data) => ({
-  ...data,
-  date: formatDate(data.date || data.start_date),
-  distance: ({ unit }) => {
-    return data.distance * (unit === 'KILOMETERS' ? 0.001 : 1.0)
-  },
-  elevation: data.elevation || data.total_elevation_gain,
-  polyline: data.polyline || data.map.summary_polyline
-})
+// const formatActivity = (data) => ({
+//   ...data,
+//   date: formatDate(data.date || data.start_date),
+//   distance: ({ unit }) => {
+//     return data.distance * (unit === 'KILOMETERS' ? 0.001 : 1.0)
+//   },
+//   elevation: data.elevation || data.total_elevation_gain,
+//   polyline: data.polyline || data.map.summary_polyline
+// })
 
 // Provide resolver functions for your schema fields
 const resolvers = {
-  Query: {
-    async me (root, args, context) {
-      const { data } = await strava.get('/athlete', injectAuthHeader(context))
-      return {
-        id: data.id,
-        firstName: data.firstname,
-        lastName: data.lastname,
-        fullName: `${data.firstname} ${data.lastname}`,
-        profilePicture: data.profile,
-        travels: await stravels
-          .get(`/travels`, injectAuthHeader(context))
-          .then(res => res.data)
-          .then(travels => travels.map(t => ({
-            ...t,
-            activities: t.activities.map(formatActivity)
-          })))
-      }
-    },
-    async travel (root, args, context) {
-      if (!args.id) return null
-      return stravels.get(`/travels/${args.id}`, injectAuthHeader(context))
-        .then(res => res.data)
-        .then(travel => ({
-          ...travel,
-          activities: travel.activities.map(formatActivity)
-        }))
-    },
-    async activity (root, args, context) {
-      if (!args.id) return null
-      const { data } = await strava.get(`/activities/${args.id}`, injectAuthHeader(context))
-      return formatActivity(data)
-    },
-    async activities (root, args, context) {
-      const { data } = await strava.get('/athlete/activities', {
-        ...injectAuthHeader(context),
-        params: {
-          per_page: args.last
-        }
-      })
-      return data.map(formatActivity)
-    },
-    async publicTravels (root, args, context) {
-      return []
-    }
-  },
+  Query,
+  // Query: {
+  //   async me (root, args, context) {
+  //     const { data } = await strava.get('/athlete', injectAuthHeader(context))
+  //     return {
+  //       id: data.id,
+  //       firstName: data.firstname,
+  //       lastName: data.lastname,
+  //       fullName: `${data.firstname} ${data.lastname}`,
+  //       profilePicture: data.profile,
+  //       travels: await stravels
+  //         .get(`/travels`, injectAuthHeader(context))
+  //         .then(res => res.data)
+  //         .then(travels => travels.map(t => ({
+  //           ...t,
+  //           activities: t.activities.map(formatActivity)
+  //         })))
+  //     }
+  //   },
+  //   async travel (root, args, context) {
+  //     if (!args.id) return null
+  //     return stravels.get(`/travels/${args.id}`, injectAuthHeader(context))
+  //       .then(res => res.data)
+  //       .then(travel => ({
+  //         ...travel,
+  //         activities: travel.activities.map(formatActivity)
+  //       }))
+  //   },
+  //   async activity (root, args, context) {
+  //     if (!args.id) return null
+  //     const { data } = await strava.get(`/activities/${args.id}`, injectAuthHeader(context))
+  //     return formatActivity(data)
+  //   },
+  //   async activities (root, args, context) {
+  //     const { data } = await strava.get('/athlete/activities', {
+  //       ...injectAuthHeader(context),
+  //       params: {
+  //         per_page: args.last
+  //       }
+  //     })
+  //     return data.map(formatActivity)
+  //   },
+  //   async publicTravels (root, args, context) {
+  //     return []
+  //   }
+  // },
   Mutation
 }
 
@@ -98,7 +90,8 @@ export const schema = makeExecutableSchema({
 export function context (headers, secrets) {
   return {
     headers,
-    secrets
+    secrets,
+    token: extractToken(headers)
   }
 };
 

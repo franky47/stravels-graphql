@@ -1,4 +1,4 @@
-export default async (root, { name }) => {
+export default async (root, { name }, context) => {
   return {
     name
   }

@@ -10,7 +10,7 @@ type User {
   firstName: String
   lastName: String
   fullName: String
-  profilePicture: String!
+  profilePicture: String
   email: String
   travels: [Travel!]!
 }
@@ -32,18 +32,23 @@ type Travel {
   activities: [Activity!]!
 }
 
+type LoginCredentials {
+  id: ID!
+  token: String!
+}
+
 # Root Types --
 
 type Query {
   me: User
   travel(id: ID!): Travel
+  travels: [Travel!]!
   activity(id: ID!): Activity
-  activities(last: Int): [Activity!]
-  publicTravels: [Travel!]!
+  activities(last: Int): [Activity!]!
 }
 
 type Mutation {
-  loginWithCode(code: String!): Token
-  loginWithToken(token: Token!): User
+  loginWithCode(code: String!): LoginCredentials
+  loginWithToken(token: Token!): LoginCredentials
   createTravel(name: String): Travel
 }
