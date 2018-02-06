@@ -6,5 +6,5 @@ export const exchangeToken = async (code) => {
   const res = await axios.get(tokenExchangeURL, {
     params: { code }
   })
-  return res.data.token
+  return res.data
 }

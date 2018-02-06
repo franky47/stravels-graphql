@@ -12,6 +12,9 @@ export const User = db.define('user', {
     type: Sequelize.INTEGER,
     primaryKey: true
   },
+  username: {
+    type: Sequelize.STRING
+  },
   firstName: {
     type: Sequelize.STRING
   },
@@ -31,7 +34,16 @@ export const User = db.define('user', {
       isEmail: true
     }
   }
-}, config)
+}, {
+  ...config,
+  updatedAt: 'lastLogin',
+  indexes: [
+    {
+      unique: true,
+      fields: ['id', 'username', 'email']
+    }
+  ]
+})
 
 export const Travel = db.define('travel', {
   id: {
