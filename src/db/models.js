@@ -23,7 +23,6 @@ export const User = db.define('user', {
   },
   profilePicture: {
     type: Sequelize.STRING,
-    allowNull: false,
     validate: {
       isUrl: true
     }
