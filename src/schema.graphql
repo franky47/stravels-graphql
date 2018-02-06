@@ -1,0 +1,49 @@
+scalar Token
+
+enum DISTANCE_UNIT {
+  METERS
+  KILOMETERS
+}
+
+type User {
+  id: ID! @unique
+  firstName: String
+  lastName: String
+  fullName: String
+  profilePicture: String!
+  email: String
+  travels: [Travel!]!
+}
+
+type Activity {
+  id: ID! @unique
+  name: String!
+  date(tz: String): String!
+  distance(unit: DISTANCE_UNIT = METERS): Float!
+  elevation: Float!
+  polyline: String!
+}
+
+type Travel {
+  id: ID! @unique
+  name: String
+  urlSlug: String!
+  author: User!
+  activities: [Activity!]!
+}
+
+# Root Types --
+
+type Query {
+  me: User
+  travel(id: ID!): Travel
+  activity(id: ID!): Activity
+  activities(last: Int): [Activity!]
+  publicTravels: [Travel!]!
+}
+
+type Mutation {
+  loginWithCode(code: String!): Token
+  loginWithToken(token: Token!): User
+  createTravel(name: String): Travel
+}

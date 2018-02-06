@@ -7,6 +7,7 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import axios from 'axios'
 import moment from 'moment-timezone'
+import typeDefs from './schema.graphql'
 import Mutation from './mutations'
 
 const strava = axios.create({
@@ -21,56 +22,6 @@ const injectAuthHeader = (context) => ({
     Authorization: context.headers.authorization
   }
 })
-
-// Construct a schema, using GraphQL schema language
-const typeDefs = `
-  scalar Token
-
-  enum DISTANCE_UNIT {
-    METERS
-    KILOMETERS
-  }
-
-  type User {
-    id: ID! @unique
-    firstName: String
-    lastName: String
-    fullName: String
-    profilePicture: String!
-    email: String
-    travels: [Travel!]!
-  }
-
-  type Activity {
-    id: ID! @unique
-    name: String!
-    date(tz: String): String!
-    distance(unit: DISTANCE_UNIT = METERS): Float!
-    elevation: Float!
-    polyline: String!
-  }
-
-  type Travel {
-    id: ID! @unique
-    name: String
-    urlSlug: String!
-    author: User!
-    activities: [Activity!]!
-  }
-
-  type Query {
-    me: User
-    travel(id: ID!): Travel
-    activity(id: ID!): Activity
-    activities(last: Int): [Activity!]
-    publicTravels: [Travel!]!
-  }
-
-  type Mutation {
-    login(code: String!): Token
-    createTravel(name: String): Travel
-  }
-`
 
 const formatDate = (date) =>
   ({ tz }) => tz ? moment(date).tz(tz).format() : date
