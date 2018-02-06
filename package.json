@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "GraphQL data server for Stravels.io",
-  "main": "./src/server.js",
+  "main": "./src/index.js",
   "scripts": {
-    "start": "babel-node ./src/server.js",
-    "start:dev": "nodemon --exec babel-node -e js,graphql,gql ./src/server.js",
+    "start": "babel-node ./src/index.js",
+    "start:dev": "nodemon --exec babel-node -e js,graphql,gql ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "now --public -e APOLLO_ENGINE_KEY=@stravels-graphql.apollo_engine_key -e DATABASE_URI=@stravels-graphql.database_uri"
   },

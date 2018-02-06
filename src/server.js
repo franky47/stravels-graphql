@@ -1,4 +1,3 @@
-import './config'
 import express from 'express'
 import { graphqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
@@ -6,7 +5,6 @@ import cors from 'cors'
 import chalk from 'chalk'
 
 import * as Schema from './schema'
-import setupDatabase from './db/setup'
 
 const port = process.env.PORT || 3000
 const server = express()
@@ -40,9 +38,9 @@ server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
   }
 }))
 
-setupDatabase()
-  .then(() => {
+export default {
+  start: () =>
     server.listen(port, () => {
       console.log(`GraphQL Server is now running on http://localhost:${port}/graphql`)
     })
-  })
+}
