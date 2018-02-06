@@ -7,7 +7,7 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import axios from 'axios'
 import moment from 'moment-timezone'
-import { exchangeToken } from './auth'
+import Mutation from './mutations'
 
 const strava = axios.create({
   baseURL: 'https://www.strava.com/api/v3'
@@ -68,6 +68,7 @@ const typeDefs = `
 
   type Mutation {
     login(code: String!): Token
+    createTravel(name: String): Travel
   }
 `
 
@@ -131,11 +132,7 @@ const resolvers = {
       return []
     }
   },
-  Mutation: {
-    async login (root, { code }) {
-      return exchangeToken(code)
-    }
-  }
+  Mutation
 }
 
 // Required: Export the GraphQL.js schema object as "schema"
