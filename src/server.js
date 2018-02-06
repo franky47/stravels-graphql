@@ -41,7 +41,6 @@ server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
 
 setupDatabase()
   .then(() => {
-    server.listen(PORT, () => {
-      console.log(chalk.green(`GraphQL Server is now running on http://localhost:${PORT}/graphql`))
+      console.log(`GraphQL Server is now running on http://localhost:${port}/graphql`)
     })
   })

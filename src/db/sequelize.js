@@ -6,12 +6,13 @@ if (!process.env.DATABASE_URI) {
 }
 
 const db = new Sequelize(process.env.DATABASE_URI, {
-  operatorsAliases: false
+  operatorsAliases: false,
+  logging: false
 })
 
 db.authenticate()
   .then(() => {
-    console.info(chalk.green('Connection to the database established successfully.'))
+    console.info('Connection to the database established successfully.')
   })
   .catch(error => {
     console.error(chalk.red('Unable to connect to the database:'), error)
