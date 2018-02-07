@@ -1,4 +1,6 @@
 import './models'
 import db from './sequelize'
 
-export default () => db.sync()
+export default () => db.sync({
+  alter: true
+})
