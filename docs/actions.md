@@ -4,7 +4,7 @@ List of interactions encountered in user stories for Stravels.
 
 ## Mutations
 
-### Login (first time, with code)
+### Login - First Time
 
 **User Story Context** : User has logged in with Strava and authorized the
 Stravels application. Upon redirection, a call to the server is made to finish
@@ -25,18 +25,49 @@ Back-end actions:
 3. Return authentication information
 
 Constraints:
-* Strava tokens should not be stored in the database, as a breach could compromise user data.
-* Strava tokens should be stored in the client instead, but would have to be transmitted for some operations
-* Transmitting them over the network is OK under TLS
+* Strava tokens are long-lived, they don't expire until the user de-authorizes the application.
+* Strava tokens should not be stored anywhere in the backend, as a breach could compromise user data.
+* Strava tokens should not be stored as plain text in the client, as a breach could compromise user data.
 
 To decouple our application from the Strava authentication system, we generate a
 JWT containing the user ID and the Strava token as claims, that can be verified
 and used in the backend for authenticating queries and mutations.
 
-Upon reception of the JWT, the front-end stores it in localStorage or in a cookie
+Upon reception of the JWT, the front-end stores it in localStorage or sessionStorage
 for subsequent authentication.
 
 *Note: this endpoint communicates with the Strava API, and is subject to rate-limiting policies, therefore some failsafe mechanism must be put in place to handle 3rd party errors.*
+
+### Login - Refresh JWT
+
+**User Story Context** : User's last login was some time ago, and they return to
+the application later on. Their JWT has expired, and needs to be refreshed.
+
+```graphql
+mutation RefreshJWT($token: AuthenticationToken!) {
+  jwt: refreshToken($token)
+}
+```
+
+Pass the Strava token (which is long-lived) to the GraphQL server, which will:
+1. Send a request to the Strava API
+2. Re-sign a fresh JWT with the response
+3. Send the newly signed token
+
+Issues:
+- If an attacker is able to steal a JWT, even a stale one, they can extract the Strava token and use it to sign a new token.
+- For that reason, sending the stale JWT would not help either.
+
+-> hash the userId/token couple and store it in the database.
+-> Encrypt the token server-side and store it encrypted in the client
+
+Risk Assessment - Which is most vulnerable ?
+Client : JWT theft and replay attacks, or refreshing of tokens based on stolen stale JWT
+Server : Database compromised - Nothing sensitive should be stored there
+Server : Application compromised, private key exposed => game over ?
+
+Best security would have to be distributed between the client and the server, so
+that an exploit would require to compromise both the target client and the server.
 
 ### Create Travel
 

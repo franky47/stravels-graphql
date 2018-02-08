@@ -1,4 +1,6 @@
-scalar Token
+scalar AuthenticationCode   # Strava OAuth redirect code
+scalar AuthenticationToken  # Strava OAuth token
+scalar JWT
 
 enum DISTANCE_UNIT {
   METERS
@@ -32,11 +34,6 @@ type Travel {
   activities: [Activity!]!
 }
 
-type LoginCredentials {
-  id: ID!
-  token: String!
-}
-
 # Root Types --
 
 type Query {
@@ -48,7 +45,9 @@ type Query {
 }
 
 type Mutation {
-  loginWithCode(code: String!): LoginCredentials
-  loginWithToken(token: Token!): LoginCredentials
+  # Login: exchange code/token for signed JWT
+  loginWithCode(code: AuthenticationCode!): JWT
+  refreshToken(token: AuthenticationToken!): JWT
+
   createTravel(name: String): Travel
 }
