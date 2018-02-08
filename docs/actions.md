@@ -12,10 +12,7 @@ the OAuth 2.0 authentication workflow (token exchange).
 
 ```graphql
 mutation Login($code: AuthenticationCode!) {
-  credentials: loginWithCode($code) {
-    id,
-    token
-  }
+  jwt: loginWithCode($code)
 }
 ```
 
