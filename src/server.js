@@ -2,17 +2,12 @@ import express from 'express'
 import { graphqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import chalk from 'chalk'
 import raven from 'raven'
 
 import * as Schema from './schema'
 
 const port = process.env.PORT || 3000
 const server = express()
-
-if (!process.env.APOLLO_ENGINE_KEY) {
-  console.warn(chalk.yellow('WARNING: process.env.APOLLO_ENGINE_KEY is not defined. Check README.md for more information'))
-}
 
 let schema
 const schemaFunction = Schema.schemaFunction || (() => Schema.schema)
@@ -23,7 +18,11 @@ const contextFunction = Schema.context || ((headers, secrets) => ({
 }))
 
 server.use(cors())
-server.use(raven.requestHandler())
+
+// Enable Sentry error tracking
+if (process.env.SENTRY_DSN) {
+  server.use(raven.requestHandler())
+}
 
 server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
   if (!schema) {
@@ -40,8 +39,10 @@ server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
   }
 }))
 
-// Report error to Sentry
-server.use(raven.errorHandler())
+// Report errors to Sentry
+if (process.env.SENTRY_DSN) {
+  server.use(raven.errorHandler())
+}
 
 export default {
   start: () =>

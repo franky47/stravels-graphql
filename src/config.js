@@ -1,8 +1,30 @@
 import dotenv from 'dotenv'
 import raven from 'raven'
+import chalk from 'chalk'
 
 // Setup environment variables
 dotenv.config()
 
+const checkEnv = (varName, config = { optional: false }) => {
+  if (!process.env[varName]) {
+    if (config.optional) {
+      console.warn(chalk.yellow(`Warning: ${varName} is not set`))
+    } else {
+      console.error(chalk.red(`Error: ${varName} is not set`))
+    }
+  }
+}
+
+// Required Application Setup
+checkEnv('DATABASE_URI')
+checkEnv('STRAVA_CLIENT_ID')
+checkEnv('STRAVA_CLIENT_SECRET')
+checkEnv('JWT_SECRET')
+
+// Optional Tracking & helpers
+checkEnv('SENTRY_DSN', { optional: true })
+
 // Setup Sentry error tracking
-raven.config(process.env.SENTRY_DSN).install()
+if (process.env.SENTRY_DSN) {
+  raven.config(process.env.SENTRY_DSN).install()
+}
