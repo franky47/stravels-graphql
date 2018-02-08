@@ -13,12 +13,10 @@ const injectHeader = (token) => ({
 // Wrapped Endpoints --
 
 const exchangeToken = (code) =>
-  axios.get('https://www.strava.com/oauth/token', {
-    params: {
-      client_id: process.env.STRAVA_CLIENT_ID,
-      client_secret: process.env.STRAVA_CLIENT_SECRET,
-      code
-    }
+  axios.post('https://www.strava.com/oauth/token', {
+    client_id: process.env.STRAVA_CLIENT_ID,
+    client_secret: process.env.STRAVA_CLIENT_SECRET,
+    code
   }).then(res => res.data)
 
 const getCurrentAthlete = (token) =>
