@@ -14,5 +14,5 @@ export const refreshToken = async (_, { token }) => {
   const athlete = await strava.getCurrentAthlete(token)
   const user = athleteToUser(athlete)
   User.upsert(user) // Don't await, let it be async
-  return jwt.generate(user.id, token) // todo: don't re-encrypt token
+  return jwt.generate(user.id, token)
 }

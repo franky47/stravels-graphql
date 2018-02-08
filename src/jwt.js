@@ -1,19 +1,4 @@
-import crypto from 'crypto'
 import jsonwebtoken from 'jsonwebtoken'
-
-const encrypt = (text) => {
-  const cipher = crypto.createCipher('aes-256-ctr', process.env.JWT_SECRET)
-  const crypted = cipher.update(text, 'utf8', 'hex')
-  return crypted + cipher.final('hex')
-}
-
-const decrypt = (cipher) => {
-  const decipher = crypto.createDecipher('aes-256-ctr', process.env.JWT_SECRET)
-  const dec = decipher.update(cipher, 'utf8', 'hex')
-  return dec + decipher.final('utf8')
-}
-
-// --
 
 const jwtOptions = {
   issuer: 'stravels-graphql',
@@ -23,7 +8,7 @@ const jwtOptions = {
 const generate = (userId, token) => new Promise((resolve, reject) => {
   const payload = {
     uid: userId,
-    tkn: encrypt(token)
+    tkn: token
   }
   jsonwebtoken.sign(payload, process.env.JWT_SECRET, jwtOptions, (err, jwt) => {
     if (err) {
@@ -38,7 +23,7 @@ const validate = (jwt) => {
   const payload = jsonwebtoken.verify(jwt, process.env.JWT_SECRET, jwtOptions)
   return {
     userId: payload.uid,
-    token: decrypt(payload.tkn)
+    token: payload.tkn
   }
 }
 
