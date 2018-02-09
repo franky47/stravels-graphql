@@ -24,6 +24,11 @@ export const transformActivity = (data) => ({
 
 // GraphQL field methods resolvers injection --
 
+export const resolveUser = (user) => ({
+  ...user,
+  fullName: user.fullName || `${user.firstName} ${user.lastName}`
+})
+
 export const resolveActivity = (activity) => ({
   ...activity,
   date: ({ tz }) => tz ? moment(activity.date).tz(tz).format() : activity.date,
