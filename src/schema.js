@@ -9,10 +9,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import typeDefs from './schema.graphql'
 import Query from './queries'
 import Mutation from './mutations'
-
-const extractToken = (headers) => {
-  return (headers.authorization || '').slice('Bearer '.length)
-}
+import jwt from './jwt'
 
 // const formatDate = (date) =>
 //   ({ tz }) => tz ? moment(date).tz(tz).format() : date
@@ -84,14 +81,25 @@ export const schema = makeExecutableSchema({
   resolvers
 })
 
+const extractAndValidateJwt = (headers) => {
+  const token = (headers.authorization || '').slice('Bearer '.length)
+  try {
+    return token ? jwt.validate(token) : null
+  } catch (error) {
+    return null
+  }
+}
+
 // Optional: Export a function to get context from the request. It accepts two
 // parameters - headers (lowercased http headers) and secrets (secrets defined
 // in secrets section). It must return an object (or a promise resolving to it).
 export function context (headers, secrets) {
+  const jwt = extractAndValidateJwt(headers)
   return {
     headers,
     secrets,
-    token: extractToken(headers)
+    userId: jwt ? jwt.userId : null,
+    token: jwt ? jwt.token : null
   }
 };
 
