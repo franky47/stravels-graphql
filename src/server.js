@@ -34,8 +34,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress(async (request) => {
   return {
     schema: await schema,
     rootValue,
-    context,
-    tracing: true
+    context
   }
 }))
 
