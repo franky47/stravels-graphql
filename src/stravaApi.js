@@ -49,40 +49,33 @@ const getActivity = async (token, id) => {
   }
 }
 
-const getActivities = (token, page = 1, pageSize = 30) =>
-  api.get('/athlete/activities', {
+const getActivities = (token, _options = {}) => {
+  const options = {
+    pageSize: 30,
+    before: null,
+    after: null,
+    ..._options
+  }
+  return api.get('/athlete/activities', {
     ...injectHeader(token),
     params: {
-      page,
-      page_size: pageSize
+      before: options.before,
+      after: options.after,
+      page_size: options.pageSize
     }
   }).then(res => res.data)
-
-const getAllActivities = async (token) => {
-  let activities = []
-  let page = 1
-  while (true) {
-    let data = []
-    try {
-      data = await getActivities(token, page, 100)
-    } catch (error) {
-      // todo: if rate-limiting, wait and try again
-      // (although it might have to wait a long time)
-      console.log(`Error while fetching all activities on page ${page}`, error)
-      break // Probably rate-limited, return what you can
-    }
-    if (data.length === 0) {
-      break
-    }
-    activities = [...activities, ...data]
-    page++
-  }
-  return activities
+    .then(activities => {
+      activities.forEach(activity => {
+        // Pre-fill cache for faster detail queries
+        cache.set(`${token}:/activities/${activity.id}`, activity)
+      })
+      return activities
+    })
 }
 
 export default {
   exchangeToken,
   getCurrentAthlete,
   getActivity,
-  getAllActivities
+  getActivities
 }

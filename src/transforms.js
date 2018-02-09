@@ -1,9 +1,11 @@
 import moment from 'moment-timezone'
 
-export const filter = (obj = {}, keys = []) => keys.reduce((out, k) => {
+const filter = (obj = {}, keys = []) => keys.reduce((out, k) => {
   out[k] = obj[k]
   return out
 }, {})
+
+const encodeLatLng = ([lat, lng]) => `${lat}|${lng}`
 
 // Strava to Stravels data transforms --
 
@@ -19,7 +21,9 @@ export const transformActivity = (data) => ({
   ...filter(data, ['id', 'name', 'distance']),
   date: data.start_date,
   elevation: data.total_elevation_gain,
-  polyline: (data.map || {}).summary_polyline || null
+  polyline: (data.map || {}).summary_polyline || null,
+  startLatLng: encodeLatLng(data.start_latlng),
+  endLatLng: encodeLatLng(data.end_latlng)
 })
 
 // GraphQL field methods resolvers injection --
@@ -31,6 +35,12 @@ export const resolveUser = (user) => ({
 
 export const resolveActivity = (activity) => ({
   ...activity,
+  title: activity.name,
   date: ({ tz }) => tz ? moment(activity.date).tz(tz).format() : activity.date,
   distance: ({ unit }) => activity.distance * (unit === 'KILOMETERS' ? 0.001 : 1.0)
 })
+
+// Filters --
+
+export const activityFilter = (activity) =>
+  activity.type === 'Ride' && !activity.private && !activity.commute
