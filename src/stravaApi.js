@@ -1,4 +1,10 @@
 import axios from 'axios'
+import Cache from './cache'
+
+const cache = new Cache({
+  ttl: '7 days',
+  refreshRate: '15 min'
+})
 
 const api = axios.create({
   baseURL: 'https://www.strava.com/api/v3'
@@ -19,13 +25,29 @@ const exchangeToken = (code) =>
     code
   }).then(res => res.data)
 
-const getCurrentAthlete = (token) =>
-  api.get('/athlete', injectHeader(token))
-    .then(res => res.data)
+const getCurrentAthlete = async (token) => {
+  const key = `${token}:/athlete`
+  if (cache.has(key)) {
+    return cache.get(key)
+  } else {
+    const data = await api.get('/athlete', injectHeader(token))
+      .then(res => res.data)
+    cache.set(key, data)
+    return data
+  }
+}
 
-const getActivity = (token, id) =>
-  api.get(`/activities/${id}`, injectHeader(token))
-    .then(res => res.data)
+const getActivity = async (token, id) => {
+  const key = `${token}:/activities/${id}`
+  if (cache.has(key)) {
+    return cache.get(key)
+  } else {
+    const data = await api.get(`/activities/${id}`, injectHeader(token))
+      .then(res => res.data)
+    cache.set(key, data)
+    return data
+  }
+}
 
 const getActivities = (token, page = 1, pageSize = 30) =>
   api.get('/athlete/activities', {
