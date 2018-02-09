@@ -57,7 +57,7 @@ export const Travel = db.define('travel', {
       is: /^[a-z\d-]+$/ // lowercase letters, numbers and dashes only
     }
   },
-  name: {
+  title: {
     type: Sequelize.STRING,
     allowNull: false
   },
@@ -82,33 +82,6 @@ export const Activity = db.define('activity', {
     // The Strava activity ID
     type: Sequelize.INTEGER,
     primaryKey: true
-  },
-  distance: { // meters
-    type: Sequelize.FLOAT,
-    validate: {
-      min: 0.0
-    }
-  },
-  elevation: Sequelize.FLOAT, // meters
-  polyline: Sequelize.STRING,
-  date: Sequelize.DATE,
-  duration: { // seconds
-    type: Sequelize.FLOAT,
-    validate: {
-      min: 0.0
-    }
-  },
-  coordinatesStart: { // Encoded lat|lng
-    type: Sequelize.STRING,
-    validate: {
-      is: /^[+-]?\d+(?:\.\d+)?\|[+-]?\d+(?:\.\d+)?$/
-    }
-  },
-  coordinatesEnd: { // Encoded lat|lng
-    type: Sequelize.STRING,
-    validate: {
-      is: /^[+-]?\d+(?:\.\d+)?\|[+-]?\d+(?:\.\d+)?$/
-    }
   },
   travel: {
     type: Sequelize.INTEGER,
