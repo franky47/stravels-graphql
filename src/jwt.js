@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 
 const jwtOptions = {
   issuer: 'stravels-graphql',
-  expiresIn: 5 // 4.. 3.. 2.. 1..
+  expiresIn: '12h'
 }
 
 const generate = (userId, token) => new Promise((resolve, reject) => {
