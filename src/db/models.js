@@ -92,3 +92,26 @@ export const Activity = db.define('activity', {
     }
   }
 }, config)
+
+export const Session = db.define('session', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  user: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: User,
+      key: 'id',
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+    }
+  },
+  code: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      isAlphanumeric: true
+    }
+  }
+})

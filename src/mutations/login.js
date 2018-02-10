@@ -1,18 +1,35 @@
+import crypto from 'crypto'
 import strava from '../stravaApi'
 import jwt from '../jwt'
-import { User } from '../db/models'
+import { User, Session } from '../db/models'
 import { athleteToUser } from '../transforms'
 
 export const loginWithCode = async (_, { code }) => {
   const data = await strava.exchangeToken(code)
   const user = athleteToUser(data.athlete)
-  User.upsert(user) // Don't await, let it be async
-  return jwt.generate(user.id, data.access_token)
+  const sessionId = crypto.randomBytes(16).toString('hex')
+  User.upsert(user)
+    .then(() => {
+      Session.create({
+        user: user.id,
+        code: sessionId
+      })
+    })
+  return jwt.generate(user.id, data.access_token, sessionId)
 }
 
-export const refreshToken = async (_, { token }) => {
-  const athlete = await strava.getCurrentAthlete(token)
-  const user = athleteToUser(athlete)
-  User.upsert(user) // Don't await, let it be async
-  return jwt.generate(user.id, token)
+export const refreshToken = async (_, args, context) => {
+  return jwt.refresh(context.jwt)
+}
+
+// Logout from all sessions (clears the session IDs)
+export const logout = async (_, args, context) => {
+  if (!context.userId) {
+    return new Error('Unauthorized: missing, expired or invalid token')
+  }
+  return Session.destroy({
+    where: {
+      user: context.userId
+    }
+  }).then(() => 'Successfully logged out of all sessions')
 }

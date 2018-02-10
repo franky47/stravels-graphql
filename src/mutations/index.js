@@ -1,8 +1,11 @@
-import { loginWithCode, refreshToken } from './login'
-// import createTravel from './createTravel'
+import {
+  loginWithCode,
+  refreshToken,
+  logout
+} from './login'
 
 export default {
   loginWithCode,
-  refreshToken
-  // createTravel
+  refreshToken,
+  logout
 }

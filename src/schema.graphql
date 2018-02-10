@@ -51,9 +51,7 @@ type Query {
 }
 
 type Mutation {
-  # Login: exchange code/token for signed JWT
   loginWithCode(code: AuthenticationCode!): JWT
-  refreshToken(token: AuthenticationToken!): JWT
-
-  # createTravel(name: String): Travel
+  refreshToken: JWT
+  logout: String
 }

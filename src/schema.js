@@ -2,7 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import typeDefs from './schema.graphql'
 import Query from './queries'
 import Mutation from './mutations'
-import jwt from './jwt'
+import { validate as validateJwt } from './jwt'
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -16,10 +16,13 @@ export const schema = makeExecutableSchema({
   resolvers
 })
 
-const extractAndValidateJwt = (headers) => {
-  const token = (headers.authorization || '').slice('Bearer '.length)
+const extractAndValidateJwt = async (headers) => {
+  const jwt = (headers.authorization || '').slice('Bearer '.length)
+  if (!jwt) {
+    return null
+  }
   try {
-    return token ? jwt.validate(token) : null
+    return { ...await validateJwt(jwt), jwt }
   } catch (error) {
     return null
   }
@@ -28,13 +31,14 @@ const extractAndValidateJwt = (headers) => {
 // Optional: Export a function to get context from the request. It accepts two
 // parameters - headers (lowercased http headers) and secrets (secrets defined
 // in secrets section). It must return an object (or a promise resolving to it).
-export function context (headers, secrets) {
-  const jwt = extractAndValidateJwt(headers)
+export async function context (headers, secrets) {
+  const jwt = await extractAndValidateJwt(headers)
   return {
     headers,
     secrets,
     userId: jwt ? jwt.userId : null,
-    token: jwt ? jwt.token : null
+    token: jwt ? jwt.token : null,
+    jwt: jwt ? jwt.jwt : null
   }
 };
 
