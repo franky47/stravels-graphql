@@ -8,13 +8,12 @@ export const loginWithCode = async (_, { code }) => {
   const data = await strava.exchangeToken(code)
   const user = athleteToUser(data.athlete)
   const sessionId = crypto.randomBytes(16).toString('hex')
-  User.upsert(user)
-    .then(() => {
-      Session.create({
-        user: user.id,
-        code: sessionId
-      })
-    })
+  // todo: pack these in a single roundtrip to DB
+  await User.upsert(user)
+  await Session.create({
+    user: user.id,
+    code: sessionId
+  })
   return jwt.generate(user.id, data.access_token, sessionId)
 }
 
