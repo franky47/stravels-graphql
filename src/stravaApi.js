@@ -24,6 +24,10 @@ const exchangeToken = (code) =>
     client_secret: process.env.STRAVA_CLIENT_SECRET,
     code
   }).then(res => res.data)
+    .catch(error => {
+      console.error(`Strava API error on /oauth/token : ${error.message}`)
+      throw error
+    })
 
 const getCurrentAthlete = async (token) => {
   const key = `${token}:/athlete`
@@ -32,6 +36,10 @@ const getCurrentAthlete = async (token) => {
   } else {
     const data = await api.get('/athlete', injectHeader(token))
       .then(res => res.data)
+      .catch(error => {
+        console.error(`Strava API error on /athlete : ${error.message}`)
+        throw error
+      })
     cache.set(key, data)
     return data
   }
@@ -44,6 +52,10 @@ const getActivity = async (token, id) => {
   } else {
     const data = await api.get(`/activities/${id}`, injectHeader(token))
       .then(res => res.data)
+      .catch(error => {
+        console.error(`Strava API error on /activities/${id} : ${error.message}`)
+        throw error
+      })
     cache.set(key, data)
     return data
   }
@@ -70,6 +82,10 @@ const getActivities = (token, _options = {}) => {
         cache.set(`${token}:/activities/${activity.id}`, activity)
       })
       return activities
+    })
+    .catch(error => {
+      console.error(`Strava API error on /athlete/activities : ${error.message}`)
+      throw error
     })
 }
 
