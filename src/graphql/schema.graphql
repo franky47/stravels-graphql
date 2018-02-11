@@ -1,5 +1,4 @@
-scalar AuthenticationCode   # Strava OAuth redirect code
-scalar AuthenticationToken  # Strava OAuth token
+scalar AuthenticationCode # Strava OAuth redirect code
 scalar JWT
 scalar Date
 
@@ -43,14 +42,12 @@ type Query {
   me: User
 
   # Activities Interfaces
-  getActivities(before: Date, after: Date): [Activity!]!
-  getActivity(id: ID!): Activity
-
-  # travel(id: ID!): Travel
-  # travels: [Travel!]!
+  activities(before: Date, after: Date): [Activity!]!
+  activity(id: ID!): Activity
 }
 
 type Mutation {
+  # Auth
   loginWithCode(code: AuthenticationCode!): JWT
   refreshToken: JWT
   logout: String

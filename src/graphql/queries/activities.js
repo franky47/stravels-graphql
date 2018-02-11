@@ -1,9 +1,10 @@
-import strava from '../stravaApi'
+import strava from '../../strava/api'
 import {
   transformActivity,
   resolveActivity,
   activityFilter
 } from '../transforms'
+import { authenticated } from '../resolvers'
 
 /**
  * getActivities - Paginated endpoint for gettting Strava activity data.
@@ -19,12 +20,12 @@ import {
  *                Useful for getting the most up to date data.
  *                If not provided, it is considered equal to current time.
  */
-export const getActivities = async (_, { before, after }, context) => {
+export const getActivities = authenticated.createResolver(async (_, { before, after }, context) => {
   const options = {
     before: before ? new Date(before).getTime() / 1000 : undefined,
     after: after ? new Date(after).getTime() / 1000 : undefined
   }
-  const activities = await strava.getActivities(context.token, options)
+  const activities = await strava.getActivities(context.stravaToken, options)
   if (after) {
     // From the Strava API docs:
     // [Activities] will be sorted oldest first if the `after` parameter is used.
@@ -35,9 +36,9 @@ export const getActivities = async (_, { before, after }, context) => {
     .filter(activityFilter)
     .map(transformActivity)
     .map(resolveActivity)
-}
+})
 
-export const getActivityById = async (_, { id }, context) => {
-  const activity = await strava.getActivity(context.token, id)
+export const getActivityById = authenticated.createResolver(async (_, { id }, context) => {
+  const activity = await strava.getActivity(context.stravaToken, id)
   return resolveActivity(transformActivity(activity))
-}
+})

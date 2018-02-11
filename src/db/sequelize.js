@@ -1,10 +1,6 @@
 import Sequelize from 'sequelize'
 import chalk from 'chalk'
 
-if (!process.env.DATABASE_URI) {
-  console.warn(chalk.yellow('WARNING: process.env.DATABASE_URI is not defined.'))
-}
-
 const db = new Sequelize(process.env.DATABASE_URI, {
   operatorsAliases: false,
   logging: false

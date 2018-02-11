@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cache from './cache'
+import { StravaApiError } from '../errors'
 
 const cache = new Cache({
   ttl: '7 days',
@@ -25,8 +26,12 @@ const exchangeToken = (code) =>
     code
   }).then(res => res.data)
     .catch(error => {
-      console.error(`Strava API error on /oauth/token : ${error.message}`)
-      throw error
+      throw new StravaApiError({
+        data: {
+          details: error.message,
+          path: '/oauth/token'
+        }
+      })
     })
 
 const getCurrentAthlete = async (token) => {
@@ -37,8 +42,12 @@ const getCurrentAthlete = async (token) => {
     const data = await api.get('/athlete', injectHeader(token))
       .then(res => res.data)
       .catch(error => {
-        console.error(`Strava API error on /athlete : ${error.message}`)
-        throw error
+        throw new StravaApiError({
+          data: {
+            details: error.message,
+            path: '/athlete'
+          }
+        })
       })
     cache.set(key, data)
     return data
@@ -53,8 +62,12 @@ const getActivity = async (token, id) => {
     const data = await api.get(`/activities/${id}`, injectHeader(token))
       .then(res => res.data)
       .catch(error => {
-        console.error(`Strava API error on /activities/${id} : ${error.message}`)
-        throw error
+        throw new StravaApiError({
+          data: {
+            details: error.message,
+            path: `/activities/${id}`
+          }
+        })
       })
     cache.set(key, data)
     return data
@@ -84,8 +97,12 @@ const getActivities = (token, _options = {}) => {
       return activities
     })
     .catch(error => {
-      console.error(`Strava API error on /athlete/activities : ${error.message}`)
-      throw error
+      throw new StravaApiError({
+        data: {
+          details: error.message,
+          path: `/athlete/activities`
+        }
+      })
     })
 }
 
