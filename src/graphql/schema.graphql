@@ -26,6 +26,7 @@ type Activity {
   polyline: String!
   startLatLng: String
   endLatLng: String
+  thumbnailUrl(retina: Boolean = false, size: Float = 64): String
 }
 
 type Travel {

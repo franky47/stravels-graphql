@@ -1,4 +1,5 @@
 import moment from 'moment-timezone'
+import { getPolylineUrl } from '../services/mapboxStatic'
 
 const filter = (obj = {}, keys = []) => keys.reduce((out, k) => {
   out[k] = obj[k]
@@ -37,7 +38,12 @@ export const resolveActivity = (activity) => ({
   ...activity,
   title: activity.name,
   date: ({ tz }) => tz ? moment(activity.date).tz(tz).format() : activity.date,
-  distance: ({ unit }) => activity.distance * (unit === 'KILOMETERS' ? 0.001 : 1.0)
+  distance: ({ unit }) => activity.distance * (unit === 'KILOMETERS' ? 0.001 : 1.0),
+  thumbnailUrl: ({ retina, size }) => getPolylineUrl(activity.polyline, {
+    retina,
+    width: size,
+    height: size
+  })
 })
 
 // Filters --
