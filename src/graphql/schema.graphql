@@ -47,14 +47,9 @@ type Query {
   activity(id: ID!): Activity
 }
 
-type AuthenticationPayload {
-  jwt: JWT
-  exp: Float
-}
-
 type Mutation {
   # Auth
-  loginWithCode(code: AuthenticationCode!): AuthenticationPayload
-  refreshToken: AuthenticationPayload
+  loginWithCode(code: AuthenticationCode!): JWT
+  refreshToken: JWT
   logout: String
 }

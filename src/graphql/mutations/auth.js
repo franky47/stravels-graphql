@@ -5,10 +5,7 @@ import {
   refresh as refreshJwt
 } from '../../auth/jwt'
 import { User, Session } from '../../db/models'
-import {
-  athleteToUser,
-  resolveAuthenticationPayload
-} from '../transforms'
+import { athleteToUser } from '../transforms'
 import { authenticated } from '../resolvers'
 
 export const loginWithCode = async (_, { code }) => {
@@ -21,13 +18,11 @@ export const loginWithCode = async (_, { code }) => {
     user: user.id,
     code: sessionCode
   })
-  const jwt = await generateJwt(user.id, data.access_token, sessionCode)
-  return resolveAuthenticationPayload(jwt)
+  return generateJwt(user.id, data.access_token, sessionCode)
 }
 
 export const refreshToken = async (_, args, context) => {
-  const jwt = await refreshJwt(context.jwt)
-  return resolveAuthenticationPayload(jwt)
+  return refreshJwt(context.jwt)
 }
 
 // Logout from all sessions

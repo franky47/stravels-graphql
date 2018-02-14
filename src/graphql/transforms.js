@@ -1,5 +1,4 @@
 import moment from 'moment-timezone'
-import jsonwebtoken from 'jsonwebtoken'
 import { getPolylineUrl } from '../services/mapboxStatic'
 
 const filter = (obj = {}, keys = []) => keys.reduce((out, k) => {
@@ -47,11 +46,6 @@ export const resolveActivity = (activity) => ({
     mapId: 'mapbox.light',
     strokeColor: '2c2'
   })
-})
-
-export const resolveAuthenticationPayload = (jwt) => ({
-  jwt,
-  exp: jsonwebtoken.decode(jwt).exp
 })
 
 // Filters --
