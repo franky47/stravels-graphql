@@ -97,6 +97,8 @@ export const refresh = async (jwt) => {
       }
     })
   }
-  await checkSession(sub, jti) // Will throw if no valid session found
+  if (!process.env.DEBUG_DISABLE_SESSION_CHECK) {
+    await checkSession(sub, jti) // Will throw if no valid session found
+  }
   return generate(sub, tkn, jti)
 }
