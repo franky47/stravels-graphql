@@ -28,3 +28,15 @@ checkEnv('SENTRY_DSN', { optional: true })
 if (process.env.SENTRY_DSN) {
   raven.config(process.env.SENTRY_DSN).install()
 }
+
+// Check for debugging envs in production --
+
+const checkDebugEnvIsNotSetInProd = (varName) => {
+  if (process.env.NODE_ENV === 'production' && process.env[varName]) {
+    console.error(chalk.red(`Error: ${varName} is a debug-only variable and must not be set in production !`))
+    process.exit(1)
+  }
+}
+
+checkDebugEnvIsNotSetInProd('DEBUG_DISABLE_SESSION_CHECK')
+checkDebugEnvIsNotSetInProd('DEBUG_USE_LOCAL_FIXTURES')

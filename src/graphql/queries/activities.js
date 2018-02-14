@@ -1,4 +1,6 @@
 import strava from '../../services/strava'
+import localStrava from '../../fixtures/localStrava'
+
 import {
   transformActivity,
   resolveActivity,
@@ -25,7 +27,12 @@ export const getActivities = authenticated.createResolver(async (_, { before, af
     before: before ? new Date(before).getTime() / 1000 : undefined,
     after: after ? new Date(after).getTime() / 1000 : undefined
   }
-  const activities = await strava.getActivities(context.stravaToken, options)
+  let activities = null
+  if (process.env.DEBUG_USE_LOCAL_FIXTURES) {
+    activities = await localStrava.getActivities(context.userId)
+  } else {
+    activities = await strava.getActivities(context.stravaToken, options)
+  }
   if (after) {
     // From the Strava API docs:
     // [Activities] will be sorted oldest first if the `after` parameter is used.

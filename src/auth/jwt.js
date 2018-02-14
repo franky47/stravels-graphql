@@ -71,7 +71,9 @@ export const validate = async (jwt) => {
     })
   }
   // Valid token, check for valid session ID
-  await checkSession(payload.sub, payload.jti)
+  if (!process.env.DEBUG_DISABLE_SESSION_CHECK) {
+    await checkSession(payload.sub, payload.jti)
+  }
   return {
     userId: payload.sub,
     stravaToken: payload.tkn
