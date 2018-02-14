@@ -5,6 +5,8 @@ import chalk from 'chalk'
 // Setup environment variables
 dotenv.config()
 
+console.info(`Running in ${process.env.NODE_ENV}`)
+
 const checkEnv = (varName, config = { optional: false }) => {
   if (!process.env[varName]) {
     if (config.optional) {
@@ -36,6 +38,9 @@ const checkDebugEnvIsNotSetInProd = (varName) => {
   if (process.env.NODE_ENV === 'production' && process.env[varName]) {
     console.error(chalk.red(`Error: ${varName} is a debug-only variable and must not be set in production !`))
     process.exit(1)
+  }
+  if (process.env[varName]) {
+    console.warn(chalk.yellow(`Warning: ${varName} is set`))
   }
 }
 
