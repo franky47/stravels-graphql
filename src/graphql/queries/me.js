@@ -1,4 +1,4 @@
-import strava from '../../strava/api'
+import strava from '../../services/strava'
 import { athleteToUser, resolveUser } from '../transforms'
 import { authenticated } from '../resolvers'
 // import { User } from '../db/models'

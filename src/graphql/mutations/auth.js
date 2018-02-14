@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import strava from '../../strava/api'
+import strava from '../../services/strava'
 import {
   generate as generateJwt,
   refresh as refreshJwt

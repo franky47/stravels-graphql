@@ -1,4 +1,4 @@
-import strava from '../../strava/api'
+import strava from '../../services/strava'
 import {
   transformActivity,
   resolveActivity,
