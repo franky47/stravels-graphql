@@ -20,6 +20,7 @@ checkEnv('DATABASE_URI')
 checkEnv('STRAVA_CLIENT_ID')
 checkEnv('STRAVA_CLIENT_SECRET')
 checkEnv('JWT_SECRET')
+checkEnv('MAPBOX_ACCESS_TOKEN')
 
 // Optional Tracking & helpers
 checkEnv('SENTRY_DSN', { optional: true })
