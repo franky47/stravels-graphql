@@ -42,7 +42,9 @@ export const resolveActivity = (activity) => ({
   thumbnailUrl: ({ retina, size }) => getPolylineUrl(activity.polyline, {
     retina,
     width: size,
-    height: size
+    height: size,
+    mapId: 'mapbox.light',
+    strokeColor: '2c2'
   })
 })
 
