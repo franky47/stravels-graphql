@@ -37,13 +37,24 @@ type Travel {
   activities: [Activity!]!
 }
 
+type TimeCursors {
+  newest: Date
+  oldest: Date
+}
+
+type PaginatedActivities {
+  cursors: TimeCursors
+  hasMore: Boolean
+  activities: [Activity!]!
+}
+
 # Root Types --
 
 type Query {
   me: User
 
   # Activities Interfaces
-  activities(before: Date, after: Date): [Activity!]!
+  activities(before: Date): PaginatedActivities
   activity(id: ID!): Activity
 }
 
