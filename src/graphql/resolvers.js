@@ -1,12 +1,18 @@
+import raven from 'raven'
 import { createResolver } from 'apollo-resolvers'
 import { isInstance } from 'apollo-errors'
-import { UnknownError } from '../errors'
+import { InternalError } from '../errors'
 import { validate as validateJwt } from '../auth/jwt'
 
 const baseResolver = createResolver(
   null, // Don't process requests, let them through on the way down
   (root, args, context, error) => {
-    return isInstance(error) ? error : new UnknownError()
+    raven.captureException(error)
+    return isInstance(error) ? error : new InternalError({
+      data: {
+        details: error.message
+      }
+    })
   }
 )
 

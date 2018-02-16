@@ -1,7 +1,7 @@
 import { createError } from 'apollo-errors'
 
-export const UnknownError = createError('UnknownError', {
-  message: 'An unknown error has occured'
+export const InternalError = createError('InternalError', {
+  message: 'An unknown internal error has occured'
 })
 
 export const UnauthorizedError = createError('UnauthorizedError', {
