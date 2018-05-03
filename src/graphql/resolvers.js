@@ -8,11 +8,13 @@ const baseResolver = createResolver(
   null, // Don't process requests, let them through on the way down
   (root, args, context, error) => {
     raven.captureException(error)
-    return isInstance(error) ? error : new InternalError({
-      data: {
-        details: error.message
-      }
-    })
+    return isInstance(error)
+      ? error
+      : new InternalError({
+          data: {
+            details: error.message
+          }
+        })
   }
 )
 

@@ -1,11 +1,8 @@
 scalar AuthenticationCode # Strava OAuth redirect code
-scalar JWT
-scalar Date
 
-enum DISTANCE_UNIT {
-  METERS
-  KILOMETERS
-}
+scalar JWT
+
+scalar Date
 
 type User {
   id: ID! @unique
@@ -21,12 +18,17 @@ type Activity {
   id: ID! @unique
   title: String!
   date(tz: String): Date!
-  distance(unit: DISTANCE_UNIT = METERS): Float!
+  distance: Float!
   elevation: Float!
   polyline: String!
   startLatLng: String
   endLatLng: String
   thumbnailUrl(retina: Boolean = false, size: Float = 64): String
+
+  # Stats
+  movingTime: Float!
+  averageSpeed: Float!
+  maxSpeed: Float!
 }
 
 type Travel {

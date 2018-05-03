@@ -16,7 +16,7 @@ const recurseGetActivitiesBefore = async (token, initialBefore) => {
     raw: [],
     filtered: []
   }
-  const recurse = async (before) => {
+  const recurse = async before => {
     const options = {
       before: before ? new Date(before).getTime() / 1000 : undefined,
       pageSize: state.numActivities
@@ -49,29 +49,33 @@ const recurseGetActivitiesBefore = async (token, initialBefore) => {
  *                Useful for fetching more data at the end of a scroll list view.
  *                If not provided, it is considered equal to the current time.
  */
-export const getActivities = authenticated.createResolver(async (_, { before }, context) => {
-  let state = {}
-  if (process.env.DEBUG_USE_LOCAL_FIXTURES) {
-    state.raw = await localStrava.getActivities(context.userId)
-    state.filtered = state.raw.filter(activityFilter)
-    state.newest = state.raw.length ? state.raw[0].start_date : null
-    state.oldest = state.raw.length ? state.raw[state.raw.length - 1].start_date : null
-  } else {
-    state = await recurseGetActivitiesBefore(context.stravaToken, before)
+export const getActivities = authenticated.createResolver(
+  async (_, { before }, context) => {
+    let state = {}
+    if (process.env.DEBUG_USE_LOCAL_FIXTURES) {
+      state.raw = await localStrava.getActivities(context.userId)
+      state.filtered = state.raw.filter(activityFilter)
+      state.newest = state.raw.length ? state.raw[0].start_date : null
+      state.oldest = state.raw.length
+        ? state.raw[state.raw.length - 1].start_date
+        : null
+    } else {
+      state = await recurseGetActivitiesBefore(context.stravaToken, before)
+    }
+    return {
+      cursors: {
+        newest: state.newest,
+        oldest: state.oldest
+      },
+      hasMore: state.raw.length > 0,
+      activities: state.filtered.map(transformActivity).map(resolveActivity)
+    }
   }
-  return {
-    cursors: {
-      newest: state.newest,
-      oldest: state.oldest
-    },
-    hasMore: state.raw.length > 0,
-    activities: state.filtered
-      .map(transformActivity)
-      .map(resolveActivity)
-  }
-})
+)
 
-export const getActivityById = authenticated.createResolver(async (_, { id }, context) => {
-  const activity = await strava.getActivity(context.stravaToken, id)
-  return resolveActivity(transformActivity(activity))
-})
+export const getActivityById = authenticated.createResolver(
+  async (_, { id }, context) => {
+    const activity = await strava.getActivity(context.stravaToken, id)
+    return resolveActivity(transformActivity(activity))
+  }
+)

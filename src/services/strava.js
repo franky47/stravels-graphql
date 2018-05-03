@@ -11,7 +11,7 @@ const api = axios.create({
   baseURL: 'https://www.strava.com/api/v3'
 })
 
-const injectHeader = (token) => ({
+const injectHeader = token => ({
   headers: {
     authorization: `Bearer ${token}`
   }
@@ -19,12 +19,14 @@ const injectHeader = (token) => ({
 
 // Wrapped Endpoints --
 
-const exchangeToken = (code) =>
-  axios.post('https://www.strava.com/oauth/token', {
-    client_id: process.env.STRAVA_CLIENT_ID,
-    client_secret: process.env.STRAVA_CLIENT_SECRET,
-    code
-  }).then(res => res.data)
+const exchangeToken = code =>
+  axios
+    .post('https://www.strava.com/oauth/token', {
+      client_id: process.env.STRAVA_CLIENT_ID,
+      client_secret: process.env.STRAVA_CLIENT_SECRET,
+      code
+    })
+    .then(res => res.data)
     .catch(error => {
       throw new StravaApiError({
         data: {
@@ -34,12 +36,13 @@ const exchangeToken = (code) =>
       })
     })
 
-const getCurrentAthlete = async (token) => {
+const getCurrentAthlete = async token => {
   const key = `${token}:/athlete`
   if (cache.has(key)) {
     return cache.get(key)
   } else {
-    const data = await api.get('/athlete', injectHeader(token))
+    const data = await api
+      .get('/athlete', injectHeader(token))
       .then(res => res.data)
       .catch(error => {
         throw new StravaApiError({
@@ -59,7 +62,8 @@ const getActivity = async (token, id) => {
   if (cache.has(key)) {
     return cache.get(key)
   } else {
-    const data = await api.get(`/activities/${id}`, injectHeader(token))
+    const data = await api
+      .get(`/activities/${id}`, injectHeader(token))
       .then(res => res.data)
       .catch(error => {
         throw new StravaApiError({
@@ -81,14 +85,16 @@ const getActivities = (token, _options = {}) => {
     after: null,
     ..._options
   }
-  return api.get('/athlete/activities', {
-    ...injectHeader(token),
-    params: {
-      before: options.before,
-      after: options.after,
-      page_size: options.pageSize
-    }
-  }).then(res => res.data)
+  return api
+    .get('/athlete/activities', {
+      ...injectHeader(token),
+      params: {
+        before: options.before,
+        after: options.after,
+        page_size: options.pageSize
+      }
+    })
+    .then(res => res.data)
     .then(activities => {
       activities.forEach(activity => {
         // Pre-fill cache for faster detail queries

@@ -34,9 +34,13 @@ if (process.env.SENTRY_DSN) {
 
 // Check for debugging envs in production --
 
-const checkDebugEnvIsNotSetInProd = (varName) => {
+const checkDebugEnvIsNotSetInProd = varName => {
   if (process.env.NODE_ENV === 'production' && process.env[varName]) {
-    console.error(chalk.red(`Error: ${varName} is a debug-only variable and must not be set in production !`))
+    console.error(
+      chalk.red(
+        `Error: ${varName} is a debug-only variable and must not be set in production !`
+      )
+    )
     process.exit(1)
   }
   if (process.env[varName]) {

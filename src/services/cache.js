@@ -6,8 +6,8 @@ const defaultOptions = {
 }
 
 export default class Cache {
-  constructor (_options = {}) {
-    const opt = {...defaultOptions, ..._options}
+  constructor(_options = {}) {
+    const opt = { ...defaultOptions, ..._options }
     this.options = {
       ttl: ms(opt.ttl),
       refreshRate: ms(opt.refreshRate)
@@ -16,7 +16,7 @@ export default class Cache {
     this.timer = setInterval(this._tick.bind(this), this.options.refreshRate)
   }
 
-  set (key, value) {
+  set(key, value) {
     this.state[key] = {
       value,
       time: Date.now()
@@ -24,22 +24,22 @@ export default class Cache {
     return value
   }
 
-  has (key) {
+  has(key) {
     return this.state.hasOwnProperty(key)
   }
 
-  get (key) {
+  get(key) {
     return this.state[key].value
   }
 
-  delete (key) {
+  delete(key) {
     delete this.state[key]
   }
 
-  _tick () {
+  _tick() {
     const now = Date.now()
     const stateCopy = { ...this.state }
-    Object.keys(stateCopy).forEach((key) => {
+    Object.keys(stateCopy).forEach(key => {
       const time = this.state[key].time + this.options.ttl
       if (time < now) {
         this.delete(key)

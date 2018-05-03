@@ -5,10 +5,12 @@ import { authenticated } from '../resolvers'
 
 // Strava API Query version
 
-export default authenticated.createResolver(async (root, args, context, info) => {
-  const athlete = await strava.getCurrentAthlete(context.stravaToken)
-  return resolveUser(athleteToUser(athlete))
-})
+export default authenticated.createResolver(
+  async (root, args, context, info) => {
+    const athlete = await strava.getCurrentAthlete(context.stravaToken)
+    return resolveUser(athleteToUser(athlete))
+  }
+)
 
 // Database query version
 // export default async (root, args, context, info) => {

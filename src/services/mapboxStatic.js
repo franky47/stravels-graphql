@@ -1,6 +1,3 @@
-// import { PixelRatio } from 'react-native'
-// import Secrets from 'react-native-config'
-
 const defaultOptions = {
   width: 100,
   height: 100,
@@ -15,12 +12,14 @@ const defaultOptions = {
 }
 
 export const getPolylineUrl = (polyline, options = {}) => {
-  const opt = {...defaultOptions, ...options}
+  const opt = { ...defaultOptions, ...options }
   const baseUrl = `https://api.mapbox.com/v4`
   const stroke = `${opt.strokeWidth}+${opt.strokeColor}-${opt.strokeOpacity}`
   const fill = `${opt.fillColor}-${opt.fillOpacity}`
   const overlay = `path-${stroke}+${fill}(${encodeURIComponent(polyline)})`
   const retina = opt.retina ? '@2x' : ''
   const token = process.env.MAPBOX_ACCESS_TOKEN
-  return `${baseUrl}/${opt.mapId}/${overlay}/auto/${opt.width}x${opt.height}${retina}.${opt.format}?access_token=${token}`
+  return `${baseUrl}/${opt.mapId}/${overlay}/auto/${opt.width}x${
+    opt.height
+  }${retina}.${opt.format}?access_token=${token}`
 }

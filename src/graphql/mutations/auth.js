@@ -1,9 +1,6 @@
 import crypto from 'crypto'
 import strava from '../../services/strava'
-import {
-  generate as generateJwt,
-  refresh as refreshJwt
-} from '../../auth/jwt'
+import { generate as generateJwt, refresh as refreshJwt } from '../../auth/jwt'
 import { User, Session } from '../../db/models'
 import { athleteToUser } from '../transforms'
 import { authenticated } from '../resolvers'

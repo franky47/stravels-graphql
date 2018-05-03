@@ -3,17 +3,10 @@ import typeDefs from './schema.graphql'
 
 // Queries
 import getCurrentUser from './queries/me'
-import {
-  getActivities,
-  getActivityById
-} from './queries/activities'
+import { getActivities, getActivityById } from './queries/activities'
 
 // Mutations
-import {
-  loginWithCode,
-  refreshToken,
-  logout
-} from './mutations/auth'
+import { loginWithCode, refreshToken, logout } from './mutations/auth'
 
 // --
 

@@ -14,7 +14,8 @@ if (process.env.SENTRY_DSN) {
   server.use(raven.requestHandler())
 }
 
-server.use('/graphql',
+server.use(
+  '/graphql',
   bodyParser.json(),
   extractJwtMiddleware(),
   graphqlServer()
@@ -29,7 +30,9 @@ export default {
   start: () => {
     const port = process.env.PORT || 3000
     server.listen(port, () => {
-      console.log(`GraphQL Server is now running on http://localhost:${port}/graphql`)
+      console.log(
+        `GraphQL Server is now running on http://localhost:${port}/graphql`
+      )
     })
   }
 }

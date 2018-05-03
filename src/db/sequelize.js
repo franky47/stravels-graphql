@@ -6,7 +6,8 @@ const db = new Sequelize(process.env.DATABASE_URI, {
   logging: false
 })
 
-db.authenticate()
+db
+  .authenticate()
   .then(() => {
     console.info('Connection to the database established successfully.')
   })
