@@ -80,10 +80,14 @@ const travelCompatibleActivities = [
 
 const isActivityPrivate = activity => !activity.private
 const isCommute = activity => activity.commute
-const isTravelCompatible = activity =>
-  travelCompatibleActivities.includes(activity.type)
+const isTravelCompatible = activity => {
+  return travelCompatibleActivities.includes(activity.type)
+}
+
+const hasPolyline = activity => activity.map && activity.map.summary_polyline
 
 export const activityFilter = activity =>
   !isActivityPrivate(activity) &&
   !isCommute(activity) &&
-  isTravelCompatible(activity)
+  isTravelCompatible(activity) &&
+  hasPolyline(activity)
