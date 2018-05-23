@@ -78,7 +78,7 @@ const travelCompatibleActivities = [
   'Inline Skate'
 ]
 
-const isActivityPrivate = activity => !activity.private
+const isPrivate = activity => activity.private
 const isCommute = activity => activity.commute
 const isTravelCompatible = activity => {
   return travelCompatibleActivities.includes(activity.type)
@@ -87,7 +87,7 @@ const isTravelCompatible = activity => {
 const hasPolyline = activity => activity.map && activity.map.summary_polyline
 
 export const activityFilter = activity =>
-  !isActivityPrivate(activity) &&
+  !isPrivate(activity) &&
   !isCommute(activity) &&
   isTravelCompatible(activity) &&
   hasPolyline(activity)
