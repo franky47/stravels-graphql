@@ -16,7 +16,10 @@ export const athleteToUser = athlete => ({
   firstName: athlete.firstname,
   lastName: athlete.lastname,
   fullName: `${athlete.firstname} ${athlete.lastname}`,
-  profilePicture: athlete.profile.startsWith('http') ? athlete.profile : null
+  profilePicture:
+    athlete.profile && athlete.profile.startsWith('http')
+      ? athlete.profile
+      : null
 })
 
 export const transformActivity = data => ({
@@ -24,8 +27,8 @@ export const transformActivity = data => ({
   date: data.start_date,
   elevation: data.total_elevation_gain,
   polyline: (data.map || {}).summary_polyline || null,
-  startLatLng: encodeLatLng(data.start_latlng),
-  endLatLng: encodeLatLng(data.end_latlng),
+  startLatLng: data.start_latlng && encodeLatLng(data.start_latlng),
+  endLatLng: data.end_latlng && encodeLatLng(data.end_latlng),
 
   // Stats
   movingTime: data.moving_time,
