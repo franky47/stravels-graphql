@@ -39,7 +39,7 @@ const exchangeToken = code =>
 const getCurrentAthlete = async token => {
   const key = `${token}:/athlete`
   if (cache.has(key)) {
-    return cache.get(key)
+    return cache.get(key).value
   } else {
     const data = await api
       .get('/athlete', injectHeader(token))
@@ -60,7 +60,7 @@ const getCurrentAthlete = async token => {
 const getActivity = async (token, id) => {
   const key = `${token}:/activities/${id}`
   if (cache.has(key)) {
-    return cache.get(key)
+    return cache.get(key).value
   } else {
     const data = await api
       .get(`/activities/${id}`, injectHeader(token))
