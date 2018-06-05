@@ -3,7 +3,6 @@
   "plugins": [
     "transform-runtime",
     "transform-async-generator-functions",
-    "transform-object-rest-spread",
-    "babel-plugin-inline-import-graphql-ast"
+    "transform-object-rest-spread"
   ]
 }
