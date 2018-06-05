@@ -23,7 +23,7 @@ export const athleteToUser = athlete => ({
 })
 
 export const transformActivity = data => ({
-  ...filter(data, ['id', 'name', 'distance']),
+  ...filter(data, ['id', 'name', 'distance', 'type']),
   date: data.start_date,
   elevation: data.total_elevation_gain,
   polyline: (data.map || {}).summary_polyline || null,
