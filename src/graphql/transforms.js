@@ -52,12 +52,12 @@ export const resolveActivity = activity => ({
           .tz(tz)
           .format()
       : activity.date,
-  thumbnailUrl: ({ retina, size }) =>
+  thumbnailUrl: ({ retina = true, size = 100, dark = false }) =>
     getPolylineUrl(activity.polyline, {
       retina,
       width: size,
       height: size,
-      mapId: 'mapbox.light',
+      mapId: dark ? 'mapbox.dark' : 'mapbox.light',
       strokeColor: '2c2'
     })
 })
