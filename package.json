@@ -8,7 +8,9 @@
     "start": "babel-node ./src/index.js",
     "start:dev": "nodemon --exec babel-node -e js,graphql,gql ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "./scripts/deploy.sh"
+    "deploy": "./scripts/deploy.sh",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "François Best <francoisbest@gmail.com>",
   "devDependencies": {
@@ -41,6 +43,8 @@
     "pg": "^7.4.1",
     "pg-hstore": "^2.3.2",
     "raven": "^2.4.0",
-    "sequelize": "^4.32.2"
-  }
+    "sequelize": "^4.32.2",
+    "snyk": "^1.163.0"
+  },
+  "snyk": true
 }
