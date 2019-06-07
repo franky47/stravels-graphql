@@ -1,21 +1,20 @@
-// @flow
 import ms from 'ms'
 
-type Options = {
-  ttl: ms,
-  refreshRate: ms
+interface Options {
+  ttl?: any
+  refreshRate?: any
 }
 
-type CacheItem = {
-  +value: any,
-  +time: number
+interface CacheItem<T> {
+  value: T
+  time: number
 }
 
-export default class Cache {
+export default class Cache<T> {
   // Member types
   options: Options
-  state: Map<string, CacheItem>
-  timer: IntervalID
+  state: Map<string, CacheItem<T>>
+  timer: NodeJS.Timeout
 
   constructor({ ttl = '3s', refreshRate = '1s' }: Options = {}) {
     this.options = {
@@ -28,7 +27,7 @@ export default class Cache {
 
   // --
 
-  set(key: string, value: any) {
+  set(key: string, value: T) {
     this.state.set(key, {
       value,
       time: Date.now()
@@ -40,8 +39,9 @@ export default class Cache {
     return this.state.has(key)
   }
 
-  get(key: string): any {
-    return this.state.get(key)
+  get(key: string): T | undefined {
+    const item = this.state.get(key)
+    return item && item.value
   }
 
   delete(key: string) {

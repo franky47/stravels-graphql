@@ -7,6 +7,7 @@ import {
   activityFilter
 } from '../transforms'
 import { authenticated } from '../resolvers'
+import { __DEV__ } from '../../config'
 
 const recurseGetActivitiesBefore = async (token, initialBefore) => {
   const state = {
@@ -52,7 +53,7 @@ const recurseGetActivitiesBefore = async (token, initialBefore) => {
 export const getActivities = authenticated.createResolver(
   async (_, { before }, context) => {
     let state = {}
-    if (process.env.DEBUG_USE_LOCAL_FIXTURES) {
+    if (__DEV__ && process.env.DEBUG_USE_LOCAL_FIXTURES) {
       state.raw = await localStrava.getActivities(context.userId)
       state.filtered = state.raw.filter(activityFilter)
       state.newest = state.raw.length ? state.raw[0].start_date : null

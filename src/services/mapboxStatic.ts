@@ -11,7 +11,7 @@ const defaultOptions = {
   fillOpacity: 0.0
 }
 
-export const getPolylineUrl = (polyline, options = {}) => {
+export const getPolylineUrl = (polyline: string, options = {}) => {
   const opt = { ...defaultOptions, ...options }
   const baseUrl = `https://api.mapbox.com/v4`
   const stroke = `${opt.strokeWidth}+${opt.strokeColor}-${opt.strokeOpacity}`

@@ -10,9 +10,8 @@ import { loginWithCode, refreshToken, logout } from './mutations/auth'
 
 // Schema ----------------------------------------------------------------------
 
-const typeDefs = gql`
+export const typeDefs = gql`
   scalar AuthenticationCode # Strava OAuth redirect code
-
   scalar JWT
 
   scalar Date
@@ -84,7 +83,7 @@ const typeDefs = gql`
 
 // -----------------------------------------------------------------------------
 
-const resolvers = {
+export const resolvers = {
   Query: {
     me: getCurrentUser,
     activities: getActivities,
