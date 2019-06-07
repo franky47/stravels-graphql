@@ -6,8 +6,11 @@
   "main": "./build/main.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon -e ts,.env -w .env -w . src/main.ts",
+    "clean": "rm -rf ./build",
+    "test": "jest",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "ci": "yarn clean && yarn test && yarn build",
+    "install": "yarn build",
     "deploy": "./scripts/deploy.sh"
   },
   "author": "François Best <contact@francoisbest.com>",
