@@ -27,7 +27,8 @@ const ignoreCleverCloudHealthCheck = (
   next: NextFunction
 ) => {
   if (req.headers['X-CleverCloud-Monitoring'] === 'telegraf') {
-    return res.sendStatus(204) // No content
+    // https://github.com/influxdata/telegraf/tree/master/plugins/outputs/health
+    return res.sendStatus(200)
   }
   next()
 }
